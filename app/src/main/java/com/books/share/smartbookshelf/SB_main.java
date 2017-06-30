@@ -12,6 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class SB_main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,6 +35,18 @@ public class SB_main extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        ArrayList<SB_main_list_items> arrayList = new ArrayList<>();
+        arrayList.add(new SB_main_list_items(0, "가나다", "당신의 지식을 가나다"));
+        arrayList.add(new SB_main_list_items(1, "마바사", "당신의 지식을 마바사"));
+        arrayList.add(new SB_main_list_items(2, "아자차", "당신의 지식을 아자차"));
+
+        SB_main_list_adapter adapter = new SB_main_list_adapter(this, R.layout.suggest_books_list_item, arrayList);
+
+        ListView listView = (ListView) findViewById(R.id.suggest_books_list);
+        listView.setAdapter(adapter);
+
     }
 
     @Override
