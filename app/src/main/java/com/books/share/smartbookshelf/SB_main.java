@@ -3,6 +3,7 @@ package com.books.share.smartbookshelf;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -41,7 +42,16 @@ public class SB_main extends AppCompatActivity
         arrayList.add(new SB_main_list_items(0, "가나다", "당신의 지식을 가나다"));
         arrayList.add(new SB_main_list_items(1, "마바사", "당신의 지식을 마바사"));
         arrayList.add(new SB_main_list_items(2, "아자차", "당신의 지식을 아자차"));
-        
+        arrayList.add(new SB_main_list_items(0, "가나다", "당신의 지식을 가나다"));
+        arrayList.add(new SB_main_list_items(1, "마바사", "당신의 지식을 마바사"));
+        arrayList.add(new SB_main_list_items(2, "아자차", "당신의 지식을 아자차"));
+        arrayList.add(new SB_main_list_items(0, "가나다", "당신의 지식을 가나다"));
+        arrayList.add(new SB_main_list_items(1, "마바사", "당신의 지식을 마바사"));
+        arrayList.add(new SB_main_list_items(2, "아자차", "당신의 지식을 아자차"));
+        arrayList.add(new SB_main_list_items(0, "가나다", "당신의 지식을 가나다"));
+        arrayList.add(new SB_main_list_items(1, "마바사", "당신의 지식을 마바사"));
+        arrayList.add(new SB_main_list_items(2, "아자차", "당신의 지식을 아자차"));
+
         SB_main_list_adapter adapter = new SB_main_list_adapter(this, R.layout.suggest_books_list_item, arrayList);
 
         ListView listView = (ListView) findViewById(R.id.suggest_books_list);
@@ -76,6 +86,28 @@ public class SB_main extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        SearchView searchView;
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint(getString(R.string.main_book_search_hint));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
         return true;
     }
 }

@@ -7,5 +7,8 @@
 
     <string name="main_book_search_hint">Search your books here</string>
     <string name="main_book_suggest_msg">Books you might like</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>
