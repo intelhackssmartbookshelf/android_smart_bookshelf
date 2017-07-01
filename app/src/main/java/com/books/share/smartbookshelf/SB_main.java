@@ -41,7 +41,7 @@ public class SB_main extends AppCompatActivity
         arrayList.add(new SB_main_list_items(0, "가나다", "당신의 지식을 가나다"));
         arrayList.add(new SB_main_list_items(1, "마바사", "당신의 지식을 마바사"));
         arrayList.add(new SB_main_list_items(2, "아자차", "당신의 지식을 아자차"));
-        
+
         SB_main_list_adapter adapter = new SB_main_list_adapter(this, R.layout.suggest_books_list_item, arrayList);
 
         ListView listView = (ListView) findViewById(R.id.suggest_books_list);
