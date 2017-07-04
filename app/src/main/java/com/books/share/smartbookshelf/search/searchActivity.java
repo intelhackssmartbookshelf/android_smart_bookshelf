@@ -1,9 +1,8 @@
-package com.books.share.smartbookshelf;
+package com.books.share.smartbookshelf.search;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,20 +11,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import com.books.share.smartbookshelf.search.searchActivity;
+import com.books.share.smartbookshelf.DetailActivity;
+import com.books.share.smartbookshelf.R;
+import com.books.share.smartbookshelf.SB_main_list_adapter;
+import com.books.share.smartbookshelf.SB_main_list_items;
 
 import java.util.ArrayList;
 
-public class SB_main extends AppCompatActivity
+public class searchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sb_main);
+        setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -37,7 +39,6 @@ public class SB_main extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
         ArrayList<SB_main_list_items> arrayList = new ArrayList<>();
         arrayList.add(new SB_main_list_items(0, "가나다", "당신의 지식을 가나다"));
@@ -55,17 +56,16 @@ public class SB_main extends AppCompatActivity
 
         SB_main_list_adapter adapter = new SB_main_list_adapter(this, R.layout.suggest_books_list_item, arrayList);
 
-        ListView listView = (ListView) findViewById(R.id.suggest_books_list);
+        ListView listView = (ListView) findViewById(R.id.full_books_listview);
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(SB_main.this, searchActivity.class);
+                Intent intent = new Intent(searchActivity.this, DetailActivity.class);
                 startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -100,7 +100,7 @@ public class SB_main extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.searchactivity, menu);
         SearchView searchView;
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) searchItem.getActionView();
