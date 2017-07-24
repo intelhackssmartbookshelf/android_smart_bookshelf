@@ -20,6 +20,7 @@ public class Conf {
      */
     private class TestConfig {
         private static final String SITE_DOMAIN_URL 		= "http://smartbookshelf.teamnexters.com";
+        private static final String APPLICATION_ID          = "com.books.share.smartbookshelf";
 
     }
 
@@ -28,11 +29,13 @@ public class Conf {
      */
     private class RealConfig {
         private static final String SITE_DOMAIN_URL 		= "http://smartbookshelf.teamnexters.com";
+        private static final String APPLICATION_ID          = "com.books.share.smartbookshelf";
     }
 
     /**
      * Server Url
      */
     public static final String SITE_DOMAIN_URL = ISCONFIG ? RealConfig.SITE_DOMAIN_URL : TestConfig.SITE_DOMAIN_URL;
+    public static final String APPLICATION_ID = ISCONFIG ? RealConfig.APPLICATION_ID : TestConfig.APPLICATION_ID;
 
 }

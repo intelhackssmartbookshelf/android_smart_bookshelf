@@ -12,7 +12,7 @@ import retrofit2.http.POST;
 public interface APIClient {
 
     @FormUrlEncoded
-    @POST("/oauth/token")
+    @POST("/o/token/")
     Call<AccessToken> getNewAccessToken(
             @Field("username") String userName,
             @Field("password") String password,
@@ -21,12 +21,11 @@ public interface APIClient {
             @Field("grant_type") String grantType);
 
     @FormUrlEncoded
-    @POST("/oauth/token")
+    @POST("/o/token/")
     Call<AccessToken> getRefreshAccessToken(
             @Field("refresh_token") String refreshToken,
             @Field("client_id") String clientId,
             @Field("client_secret") String clientSecret,
-            @Field("redirect_uri") String redirectUri,
             @Field("grant_type") String grantType);
 
 }

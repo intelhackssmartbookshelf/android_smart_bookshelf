@@ -25,18 +25,18 @@
         </activity>
 
         <activity
-                android:name=".ui.searchActivity"
+                android:name=".ui.SearchActivity"
                 android:label="@string/title_activity_search"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
                 android:name=".ui.DetailActivity"
                 android:label="@string/title_activity_detail"
-                android:parentActivityName=".ui.searchActivity"
+                android:parentActivityName=".ui.SearchActivity"
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.books.share.smartbookshelf.ui.searchActivity"/>
+                    android:value="com.books.share.smartbookshelf.ui.SearchActivity"/>
         </activity>
 
         <service android:name=".lib.fcm.MyFirebaseMessagingService">
@@ -52,10 +52,14 @@
 
         <activity
                 android:name=".ui.LoginActivity"
-                android:label="@string/title_activity_login">
+                android:label="@string/title_activity_login"
+                android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <data
+                        android:host="oauth"
+                        android:scheme="com.books.share.smartbookshelf" />
             </intent-filter>
         </activity>
     </application>

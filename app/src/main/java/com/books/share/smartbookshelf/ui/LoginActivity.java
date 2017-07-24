@@ -3,15 +3,13 @@ package com.books.share.smartbookshelf.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,20 +18,25 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.books.share.smartbookshelf.R;
+import com.books.share.smartbookshelf.lib.conf.Conf;
+import com.books.share.smartbookshelf.lib.trans.api.APIClient;
+import com.books.share.smartbookshelf.lib.trans.api.ServiceGenerator;
+import com.books.share.smartbookshelf.lib.trans.api.object.AccessToken;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -59,6 +62,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private UserLoginTask mAuthTask = null;
 
+    public static final String API_LOGIN_URL = "http://smartbookshelf.teamnexters.com/o/authorize/";
+    public static final String API_OAUTH_CLIENTID = "HCte2sGHTu7U5KdvILK8NSa6DHwuCFlxlL6aPbpf";
+    public static final String API_OAUTH_CLIENTSECRET = "Uy2hsBjbmovNo0piMveuxfZ0vAAP9LSb1DgFNw2hxlPTXEudXBrT6YGB94HD394zHE2qG9csrPZgahIVspfyeQvLrmogWdcapr4bLPngg48VHD09bIWYywSGIpGFJyAz";
+    public static final String API_OAUTH_REDIRECT = "com.books.share.smartbookshelf://oauth";
+
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -72,6 +80,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(Conf.APPLICATION_ID, Context.MODE_PRIVATE);
+
+        if(prefs.getBoolean("oauth.loggedin", false)){
+            RefreshToken refreshToken = new RefreshToken();
+            refreshToken.execute();
+        }
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -188,6 +203,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -293,6 +309,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
+    public boolean checkResponse(Response<AccessToken> response, SharedPreferences prefs){
+        int statusCode = response.code();
+        if(statusCode == 200) {
+            AccessToken token = response.body();
+            prefs.edit().putBoolean("oauth.loggedin", true).apply();
+            prefs.edit().putString("oauth.accesstoken", token.getAccess_token()).apply();
+            prefs.edit().putString("oauth.refreshtoken", token.getRefresh_token()).apply();
+            prefs.edit().putString("oauth.tokentype", token.getToken_type()).apply();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -309,25 +339,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            final SharedPreferences prefs = getApplicationContext().getSharedPreferences(
+                    Conf.APPLICATION_ID, Context.MODE_PRIVATE);
+
+            APIClient client = ServiceGenerator.createService(APIClient.class);
+            Call<AccessToken> call = client.getNewAccessToken(mEmailView.getText().toString(), mPasswordView.getText().toString(), API_OAUTH_CLIENTID,
+                    API_OAUTH_CLIENTSECRET, "password");
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                return checkResponse(call.execute(), prefs);
+            } catch (IOException e) {
+                Log.e("act", "error", e);
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
         }
 
         @Override
@@ -350,5 +374,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class RefreshToken extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            final SharedPreferences prefs = getApplicationContext().getSharedPreferences(
+                    Conf.APPLICATION_ID, Context.MODE_PRIVATE);
+
+            APIClient client = ServiceGenerator.createService(APIClient.class);
+            Call<AccessToken> call = client.getRefreshAccessToken(prefs.getString("oauth.refreshtoken", ""), API_OAUTH_CLIENTID, API_OAUTH_CLIENTSECRET,
+                     "refresh_token");
+
+            try {
+                return checkResponse(call.execute(), prefs);
+            } catch (IOException e) {
+                Log.e("act", "error", e);
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+            showProgress(false);
+
+            if (success) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            } else {
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
+
+
 }
 

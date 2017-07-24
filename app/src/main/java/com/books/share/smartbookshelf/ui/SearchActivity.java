@@ -20,7 +20,7 @@ import com.books.share.smartbookshelf.item.MainActivity_ListItem;
 
 import java.util.ArrayList;
 
-public class searchActivity extends AppCompatActivity
+public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -61,7 +61,7 @@ public class searchActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(searchActivity.this, DetailActivity.class);
+                Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
                 startActivity(intent);
             }
         });

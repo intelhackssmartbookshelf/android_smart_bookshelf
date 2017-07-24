@@ -3,6 +3,8 @@ package com.books.share.smartbookshelf.ui;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.books.share.smartbookshelf.R;
 import com.books.share.smartbookshelf.adapter.MainActivity_ListAdapter;
 import com.books.share.smartbookshelf.item.MainActivity_ListItem;
@@ -24,6 +27,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private boolean mKillFlag = false;
+    private Handler mKillHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,20 +70,19 @@ public class MainActivity extends AppCompatActivity
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this, searchActivity.class);
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
             }
         });
-    }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        mKillHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 0) {
+                    mKillFlag = false;
+                }
+            }
+        };
     }
 
 
@@ -98,6 +103,9 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    protected void finishApp() {
+        finish();
     }
 
     @Override
@@ -127,6 +135,19 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... voids) {
             return null;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mKillFlag) {
+            Toast.makeText(this, "Are you sure you want to quit the app?",
+                    Toast.LENGTH_SHORT).show();
+            mKillFlag = true;
+            mKillHandler.sendEmptyMessageDelayed(0, 2000);
+
+        } else {
+            finishApp();
         }
     }
 
