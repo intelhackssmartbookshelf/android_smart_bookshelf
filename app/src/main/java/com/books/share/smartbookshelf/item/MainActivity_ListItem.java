@@ -1,4 +1,4 @@
-package com.books.share.smartbookshelf;
+package com.books.share.smartbookshelf.item;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SB_main_list_items {
+public class MainActivity_ListItem {
     private int icon;
     private String name;
     private String desc;
