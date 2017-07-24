@@ -19,7 +19,7 @@ public class Conf {
      * The config of dev server
      */
     private class TestConfig {
-        private static final String SITE_DOMAIN_URL 		= "http://sportal.dev.weplatform.co.kr:19990/MgGate";
+        private static final String SITE_DOMAIN_URL 		= "http://smartbookshelf.teamnexters.com";
 
     }
 
@@ -27,7 +27,7 @@ public class Conf {
      * The config of real server
      */
     private class RealConfig {
-        private static final String SITE_DOMAIN_URL 		= "https://www.bizplay.co.kr/MgGate";
+        private static final String SITE_DOMAIN_URL 		= "http://smartbookshelf.teamnexters.com";
     }
 
     /**

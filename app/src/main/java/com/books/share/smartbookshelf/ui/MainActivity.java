@@ -1,6 +1,7 @@
 package com.books.share.smartbookshelf.ui;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.View;
@@ -120,5 +121,14 @@ public class MainActivity extends AppCompatActivity
         });
         return true;
     }
+
+    public class GetMainBooksList extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+    }
+
 
 }
