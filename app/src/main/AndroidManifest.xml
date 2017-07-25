@@ -21,10 +21,10 @@
                 android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
                 android:name=".ui.MainActivity"
                 android:label="@string/app_name"
@@ -33,7 +33,6 @@
                 <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
         </activity>
-
         <activity
                 android:name=".ui.SearchActivity"
                 android:label="@string/title_activity_search"
@@ -60,7 +59,8 @@
             </intent-filter>
         </service>
 
-
+        <activity android:name=".ui.NewBookActivity">
+        </activity>
     </application>
 
 </manifest>

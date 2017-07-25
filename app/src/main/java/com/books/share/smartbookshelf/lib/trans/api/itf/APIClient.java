@@ -1,4 +1,4 @@
-package com.books.share.smartbookshelf.lib.trans.api;
+package com.books.share.smartbookshelf.lib.trans.api.itf;
 
 import com.books.share.smartbookshelf.lib.trans.api.object.AccessToken;
 import retrofit2.Call;

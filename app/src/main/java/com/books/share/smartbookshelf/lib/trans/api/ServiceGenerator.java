@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 
 import com.books.share.smartbookshelf.lib.conf.Conf;
+import com.books.share.smartbookshelf.lib.trans.api.itf.APIClient;
 import com.books.share.smartbookshelf.lib.trans.api.object.AccessToken;
 
 import java.io.IOException;

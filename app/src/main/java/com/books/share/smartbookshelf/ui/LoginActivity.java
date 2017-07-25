@@ -31,7 +31,7 @@ import java.util.List;
 
 import com.books.share.smartbookshelf.R;
 import com.books.share.smartbookshelf.lib.conf.Conf;
-import com.books.share.smartbookshelf.lib.trans.api.APIClient;
+import com.books.share.smartbookshelf.lib.trans.api.itf.APIClient;
 import com.books.share.smartbookshelf.lib.trans.api.ServiceGenerator;
 import com.books.share.smartbookshelf.lib.trans.api.object.AccessToken;
 import retrofit2.Call;
