@@ -10,8 +10,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.books.share.smartbookshelf.R;
 import com.books.share.smartbookshelf.ui.MainActivity;
-import com.books.share.smartbookshelf.ui.NewBookActivity;
-import com.books.share.smartbookshelf.ui.SearchActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
