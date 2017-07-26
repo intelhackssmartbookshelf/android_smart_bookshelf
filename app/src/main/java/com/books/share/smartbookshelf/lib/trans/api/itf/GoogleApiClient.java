@@ -11,7 +11,8 @@ import retrofit2.http.Query;
 public interface GoogleApiClient {
     @GET("/books/v1/volumes")
     Call<BookList> getVolumeBookList(
-            @Query("q") String q);
+            @Query("q") String q,
+            @Query("maxResults") String maxResults);
 
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://www.googleapis.com/")

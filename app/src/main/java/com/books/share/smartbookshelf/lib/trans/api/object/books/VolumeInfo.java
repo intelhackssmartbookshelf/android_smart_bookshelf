@@ -2,11 +2,12 @@ package com.books.share.smartbookshelf.lib.trans.api.object.books;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
 @Data
-public class VolumeInfo {
+public class VolumeInfo implements Serializable {
     private String title;
     private ArrayList<String> authors;
     private String publisher;
