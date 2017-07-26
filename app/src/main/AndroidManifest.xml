@@ -59,7 +59,14 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.NewBookActivity">
+        <activity
+                android:name=".ui.NewBookActivity"
+                android:label="@string/title_activity_newbook"
+                android:parentActivityName=".ui.MainActivity">
+        </activity>
+        <activity
+                android:name=".ui.RegisterActivity"
+                android:parentActivityName=".ui.NewBookActivity">
         </activity>
     </application>
 
