@@ -68,6 +68,11 @@
                 android:name=".ui.RegisterActivity"
                 android:parentActivityName=".ui.NewBookActivity">
         </activity>
+        <activity
+                android:name=".ui.SmartBookshelfMainActivity"
+                android:label="@string/title_activity_smart_bookshelf_main"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

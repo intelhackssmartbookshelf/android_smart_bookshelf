@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.books.share.smartbookshelf.R;
 import com.books.share.smartbookshelf.lib.trans.api.object.Book;
+import com.books.share.smartbookshelf.lib.trans.api.object.books.VolumeInfo;
 import com.books.share.smartbookshelf.ui.RegisterActivity;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -45,7 +46,11 @@ public class NewBook_ListAdapter extends RecyclerView.Adapter<NewBook_ListAdapte
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
-        holder.tvTitle.setText(itemList.get(position).getVolumeInfo().getTitle());
+        VolumeInfo volumeInfo = itemList.get(position).getVolumeInfo();
+
+        holder.tvTitle.setText(volumeInfo.getTitle());
+        holder.ivPublisher.setText(volumeInfo.getPublisher());
+        holder.ivDescription.setText(volumeInfo.getDescription());
         try {
             Picasso.with(context).load(itemList.get(position).getVolumeInfo().getImageLinks().get("thumbnail")).into(holder.ivPhoto);
             Log.d("img", itemList.get(position).getVolumeInfo().getImageLinks().get("thumbnail"));
@@ -66,12 +71,16 @@ public class NewBook_ListAdapter extends RecyclerView.Adapter<NewBook_ListAdapte
 
         public TextView tvTitle;
         public ImageView ivPhoto;
+        public TextView ivPublisher;
+        public TextView ivDescription;
 
         public RecyclerViewHolders(View itemView) {
             super(itemView);
 
             tvTitle = (TextView) itemView.findViewById(R.id.book_card_view_name);
             ivPhoto = (ImageView) itemView.findViewById(R.id.book_card_view_img);
+            ivPublisher = (TextView) itemView.findViewById(R.id.book_card_view_publisher);
+            ivDescription = (TextView) itemView.findViewById(R.id.book_card_view_desc);
 
             itemView.setOnClickListener(this);
 
