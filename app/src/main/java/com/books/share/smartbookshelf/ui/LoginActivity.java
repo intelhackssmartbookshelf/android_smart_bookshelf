@@ -1,12 +1,17 @@
 package com.books.share.smartbookshelf.ui;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.*;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -33,13 +38,14 @@ import com.books.share.smartbookshelf.R;
 import com.books.share.smartbookshelf.lib.conf.Conf;
 import com.books.share.smartbookshelf.lib.trans.api.itf.APIClient;
 import com.books.share.smartbookshelf.lib.trans.api.ServiceGenerator;
+import com.books.share.smartbookshelf.lib.trans.api.itf.BookshelfApiClient;
 import com.books.share.smartbookshelf.lib.trans.api.object.AccessToken;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
-
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 /**
  * A login screen that offers login via email/password.
  */
@@ -49,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -73,13 +80,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+
+    public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
+
+    String[] permissions = new String[]{
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+
+        if (checkPermissions()) {
+            getLocation();
+        }
+
 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(Conf.APPLICATION_ID, Context.MODE_PRIVATE);
 
@@ -142,19 +162,85 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return false;
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
+
+    private boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p : permissions) {
+            result = ContextCompat.checkSelfPermission(getApplicationContext(), p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permissions granted.
+                    getLocation();
+                } else {
+                    String permission = "";
+                    for (String per : permissions) {
+                        permission += "\n" + per;
+                    }
+                    Log.d("login", permission);
+                    // permissions list of don't granted permission
+                }
+                return;
             }
         }
     }
+//    /**
+//     * Callback received when a permissions request has been completed.
+//     */
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        if (requestCode == REQUEST_READ_CONTACTS) {
+//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                populateAutoComplete();
+//            }
+//        } else if(requestCode == REQUEST_ACCESS_FINE_LOCATION) {
+//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                getLocation();
+//            }
+//        }
+//    }
 
+    private void getLocation() {
+        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+        List<String> providers = lm.getProviders(true);
+
+        Location bestLocation = null;
+
+        for (String provider : providers) {
+            Location location = lm.getLastKnownLocation(provider);
+            if (location == null) {
+                continue;
+            }
+
+            if (bestLocation == null || location.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = location;
+                SaveLocation saveLocation = new SaveLocation(String.valueOf(bestLocation.getLatitude()), String.valueOf(bestLocation.getLongitude()));
+                saveLocation.execute();
+                Log.d("login", bestLocation.getLongitude() + " " + bestLocation.getLatitude());
+            }
+        }
+
+        if (bestLocation == null) {
+            Log.d("login", "is NULL!");
+        }
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -418,6 +504,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    public class SaveLocation extends AsyncTask<Void, Void, Boolean> {
+
+        private final String lat_r;
+        private final String lng_r;
+
+        SaveLocation(String lat, String lng) {
+            lat_r = lat;
+            lng_r = lng;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            final SharedPreferences prefs = getApplicationContext().getSharedPreferences(
+                    Conf.APPLICATION_ID, Context.MODE_PRIVATE);
+            AccessToken accessToken = new AccessToken();
+            accessToken.setAccess_token(prefs.getString("oauth.accesstoken", ""));
+            accessToken.setRefresh_token(prefs.getString("oauth.refreshtoken", ""));
+            accessToken.setToken_type(prefs.getString("oauth.tokentype", ""));
+
+            BookshelfApiClient client = ServiceGenerator.createService(BookshelfApiClient.class, accessToken, getApplicationContext());
+            Call<Object> call = client.setLocation(lat_r, lng_r);
+            try {
+                call.execute();
+                return true;
+            } catch (IOException e) {
+                Log.e("act", "error", e);
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+            showProgress(false);
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
 
 }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
+import android.util.Log;
 import com.books.share.smartbookshelf.lib.conf.Conf;
 import com.books.share.smartbookshelf.lib.trans.api.itf.APIClient;
 import com.books.share.smartbookshelf.lib.trans.api.object.AccessToken;
@@ -49,11 +50,12 @@ public class ServiceGenerator {
         builder = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create());
-
+        Log.d("login", accessToken.toString());
         if (accessToken != null) {
             mContext = c;
             mToken = accessToken;
             final AccessToken token = accessToken;
+            Log.d("login", accessToken.getAccess_token());
             httpClient.addInterceptor(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
