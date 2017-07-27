@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.books.share.smartbookshelf.R;
-import com.books.share.smartbookshelf.ui.MainActivity;
 import com.books.share.smartbookshelf.ui.NewBookActivity;
+import com.books.share.smartbookshelf.ui.SmartBookshelfMainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -45,7 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("keyword", messageData.get("keyword"));
         } else {
             Log.d(TAG, "nnnn");
-            intent = new Intent(this, MainActivity.class);
+            intent = new Intent(this, SmartBookshelfMainActivity.class);
         }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

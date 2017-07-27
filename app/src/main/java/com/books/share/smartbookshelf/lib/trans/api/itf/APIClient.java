@@ -28,4 +28,12 @@ public interface APIClient {
             @Field("client_secret") String clientSecret,
             @Field("grant_type") String grantType);
 
+    @FormUrlEncoded
+    @POST("/o/revoke_token/")
+    Call<Object> revokeToken(
+            @Field("token") String token,
+            @Field("client_id") String client_id,
+            @Field("client_secret") String client_secret
+    );
+
 }

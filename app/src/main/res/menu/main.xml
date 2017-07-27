@@ -2,11 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      tools:context=".ui.MainActivity">
+      tools:context=".ui.SmartBookshelfMainActivity">
     <item
-            android:id="@+id/action_search"
-            android:icon="@android:drawable/ic_menu_search"
-            app:showAsAction="always"
-            app:actionViewClass="android.support.v7.widget.SearchView"
-            android:title="Search"/>
+            android:id="@+id/menu_main"
+            android:icon="@mipmap/ic_more_vert_white_24dp"
+            android:orderInCategory="0"
+            android:title="menu"
+            app:showAsAction="always">
+        <menu>
+
+            <item
+                    android:id="@+id/logout"
+                    android:title="Sign out" />
+
+            <item
+                    android:id="@+id/setting"
+                    android:title="Settings" />
+
+
+        </menu>
+    </item>
+
 </menu>

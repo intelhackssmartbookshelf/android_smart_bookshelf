@@ -1,6 +1,10 @@
 package com.books.share.smartbookshelf.lib.fcm;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Log;
+import com.books.share.smartbookshelf.lib.conf.Conf;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -19,7 +23,9 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
-        Log.d(TAG, token);
+        final SharedPreferences prefs = getApplicationContext().getSharedPreferences(
+                Conf.APPLICATION_ID, Context.MODE_PRIVATE);
+
+        prefs.edit().putString("push_token", token).apply();
     }
 }

@@ -25,28 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-                android:name=".ui.MainActivity"
-                android:label="@string/app_name"
-                android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-            </intent-filter>
-        </activity>
-        <activity
-                android:name=".ui.SearchActivity"
-                android:label="@string/title_activity_search"
-                android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
-                android:name=".ui.DetailActivity"
-                android:label="@string/title_activity_detail"
-                android:parentActivityName=".ui.SearchActivity"
-                android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.books.share.smartbookshelf.ui.SearchActivity"/>
-        </activity>
 
         <service android:name=".lib.fcm.MyFirebaseMessagingService">
             <intent-filter>
