@@ -41,6 +41,7 @@ public class AddBookActivity extends AppCompatActivity {
     private MenuItem tAdd;
     private Gson gson;
     private Book book;
+    private String pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class AddBookActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         book = (Book) intent.getSerializableExtra("book");
-
+        pos = intent.getStringExtra("pos");
         Log.d("please", book.getVolumeInfo().toString());
 
         try {
@@ -76,6 +77,12 @@ public class AddBookActivity extends AppCompatActivity {
         tPublisherDate.setText(book.getVolumeInfo().getPublishedDate());
         tDesc.setText(book.getVolumeInfo().getDescription());
 
+        double ab = (Integer.parseInt(pos)/30.0)*10.0;
+        Log.d("test", String.valueOf(ab));
+        int a =  (int) Math.round(ab);
+        Log.d("test", String.valueOf(a) + " "+pos);
+
+        onPos(a);
 
     }
 
@@ -98,7 +105,53 @@ public class AddBookActivity extends AppCompatActivity {
 
         return true;
     }
+    public void onPos(int number){
+        TextView textView;
+        Log.d("test", String.valueOf(number));
+        switch(number){
+            case 1:
+                textView = (TextView) findViewById(R.id.add_book_location_1);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 2:
+                textView = (TextView) findViewById(R.id.add_book_location_2);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 3:
+                textView = (TextView) findViewById(R.id.add_book_location_3);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 4:
+                textView = (TextView) findViewById(R.id.add_book_location_4);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 5:
+                textView = (TextView) findViewById(R.id.add_book_location_5);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 6:
+                textView = (TextView) findViewById(R.id.add_book_location_6);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 7:
+                textView = (TextView) findViewById(R.id.add_book_location_7);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 8:
+                textView = (TextView) findViewById(R.id.add_book_location_8);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 9:
+                textView = (TextView) findViewById(R.id.add_book_location_9);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
+            case 10:
+                textView = (TextView) findViewById(R.id.add_book_location_10);
+                textView.setBackgroundColor(R.color.cardview_dark_background);
+                break;
 
+        }
+    }
     private class saveBooks extends AsyncTask<Book, Void, Void> {
 
         @Override
@@ -119,8 +172,8 @@ public class AddBookActivity extends AppCompatActivity {
                     , volumeInfo.getPublisher()
                     , volumeInfo.getDescription()
                     , gson.toJson(book)
-                    , 10.0
-                    , 100
+                    , 25.0
+                    , Integer.parseInt(pos)
                     , "remark");
 
             try {

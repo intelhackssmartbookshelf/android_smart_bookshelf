@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:background="#afafaf"
                 android:id="@+id/add_book_sep_shelf"
-                android:layout_below="@id/add_book_publishdate"
+                android:layout_below="@id/add_book_img"
                 android:layout_margin="10dp"/>
 
         <TextView

@@ -42,6 +42,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent = new Intent(this, NewBookActivity.class);
             intent.putExtra("keyword", messageData.get("keyword"));
             intent.putExtra("totalLen", messageData.get("totallen"));
+            intent.putExtra("pos", messageData.get("position"));
         } else {
             intent = new Intent(this, SmartBookshelfMainActivity.class);
         }

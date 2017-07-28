@@ -98,6 +98,7 @@ public class NewBook_ListAdapter extends RecyclerView.Adapter<NewBook_ListAdapte
             Toast.makeText(view.getContext(), "Clicked Card Position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
             Intent moveIntent = new Intent(context, AddBookActivity.class);
             moveIntent.putExtra("book", itemList.get(getLayoutPosition()));
+            moveIntent.putExtra("pos", pos);
             context.startActivity(moveIntent);
         }
     }
