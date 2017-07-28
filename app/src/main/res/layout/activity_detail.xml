@@ -6,7 +6,7 @@
         android:id="@+id/activity_register"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.books.share.smartbookshelf.ui.AddBookActivity">
+        tools:context="com.books.share.smartbookshelf.ui.DetailActivity">
 
     <RelativeLayout
             android:layout_width="match_parent"
@@ -200,6 +200,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="desc"
+                android:id="@+id/detail_book_desc"
                 android:layout_below="@id/detail_book_sep_shelf1"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"/>

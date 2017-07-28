@@ -27,24 +27,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.i(TAG, "From: " + remoteMessage.getFrom());
 
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getData());
+        if (remoteMessage.getData() != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getData().toString());
+            sendNotification(remoteMessage.getData());
         }
+
 
     }
 
-    private void sendNotification(String messageBody, Map<String, String> messageData) {
+    private void sendNotification(Map<String, String> messageData) {
         Intent intent;
 
         if(messageData.get("type")!= null && messageData.get("type").toString().equals("1")) {
-            Log.d(TAG, "kkkk");
             intent = new Intent(this, NewBookActivity.class);
             intent.putExtra("keyword", messageData.get("keyword"));
+            intent.putExtra("totalLen", messageData.get("totallen"));
         } else {
-            Log.d(TAG, "nnnn");
             intent = new Intent(this, SmartBookshelfMainActivity.class);
         }
 
@@ -55,8 +53,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("SmartBookshelf")
-                .setContentText(messageBody)
+                .setContentTitle(messageData.get("title"))
+                .setContentText(messageData.get("msg"))
                 .setAutoCancel(true)
                 .setVibrate(new long[] {500, 100})
                 .setSound(defaultSoundUri)

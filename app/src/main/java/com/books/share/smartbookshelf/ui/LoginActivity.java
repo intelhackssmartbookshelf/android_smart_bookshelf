@@ -4,6 +4,9 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -22,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,6 +37,7 @@ import android.widget.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.books.share.smartbookshelf.R;
 import com.books.share.smartbookshelf.lib.conf.Conf;
@@ -41,12 +46,16 @@ import com.books.share.smartbookshelf.lib.trans.api.ServiceGenerator;
 import com.books.share.smartbookshelf.lib.trans.api.itf.BookshelfApiClient;
 import com.books.share.smartbookshelf.lib.trans.api.object.AccessToken;
 import com.books.share.smartbookshelf.lib.trans.api.object.FcmToken;
+import com.books.share.smartbookshelf.lib.trans.api.object.MyShelf;
+import com.books.share.smartbookshelf.ui.fragment.Myshelf;
+import com.google.firebase.messaging.RemoteMessage;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -73,11 +82,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION};
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -85,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(Conf.APPLICATION_ID, Context.MODE_PRIVATE);
 
-        if(prefs.getBoolean("oauth.loggedin", false)){
+        if (prefs.getBoolean("oauth.loggedin", false)) {
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.execute();
         }
@@ -113,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -376,9 +388,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    public boolean checkResponse(Response<AccessToken> response, SharedPreferences prefs){
+    public boolean checkResponse(Response<AccessToken> response, SharedPreferences prefs) {
         int statusCode = response.code();
-        if(statusCode == 200) {
+        if (statusCode == 200) {
             AccessToken token = response.body();
             prefs.edit().putBoolean("oauth.loggedin", true).apply();
             prefs.edit().putString("oauth.accesstoken", token.getAccess_token()).apply();
@@ -456,7 +468,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             APIClient client = ServiceGenerator.createService(APIClient.class);
             Call<AccessToken> call = client.getRefreshAccessToken(prefs.getString("oauth.refreshtoken", ""), API_OAUTH_CLIENTID, API_OAUTH_CLIENTSECRET,
-                     "refresh_token");
+                    "refresh_token");
 
             try {
                 return checkResponse(call.execute(), prefs);
@@ -509,9 +521,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             BookshelfApiClient client = ServiceGenerator.createService(BookshelfApiClient.class, accessToken, getApplicationContext());
             Call<Object> call = client.setLocation(lat_r, lng_r);
             Call<FcmToken> call_token = client.saveFcmToken(1, prefs.getString("push_token", ""));
+            Call<MyShelf> shelf = client.getShelf();
             try {
                 call.execute();
                 call_token.execute();
+                MyShelf myShelf = shelf.execute().body();
+                prefs.edit().putInt("shelf", myShelf.getId()).apply();
+                prefs.edit().putInt("user", myShelf.getUser()).apply();
                 return true;
             } catch (IOException e) {
                 Log.e("act", "error", e);

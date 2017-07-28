@@ -31,12 +31,12 @@ public class NewBookActivity extends AppCompatActivity {
     private NewBook_ListAdapter mAdapter;
     private View mProgressView;
     private String pos;
-
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_book);
-        Intent intent = getIntent();
+        intent = getIntent();
 
         String keyword = intent.getStringExtra("keyword");
         pos = intent.getStringExtra("pos");

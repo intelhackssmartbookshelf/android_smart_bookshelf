@@ -12,8 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.books.share.smartbookshelf.R;
 import com.books.share.smartbookshelf.lib.trans.api.object.Book;
+import com.books.share.smartbookshelf.lib.trans.api.object.MyBooks;
 import com.books.share.smartbookshelf.lib.trans.api.object.books.VolumeInfo;
 import com.books.share.smartbookshelf.ui.AddBookActivity;
+import com.books.share.smartbookshelf.ui.DetailActivity;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -22,18 +24,16 @@ import java.util.ArrayList;
 /**
  * Created by limjuhyun on 26/07/2017.
  */
-public class NewBook_ListAdapter extends RecyclerView.Adapter<NewBook_ListAdapter.RecyclerViewHolders> {
+public class MyBook_ListAdapter extends RecyclerView.Adapter<MyBook_ListAdapter.RecyclerViewHolders> {
 
     private Context context;
-    private ArrayList<Book> itemList;
-    private String pos;
+    private ArrayList<MyBooks> itemList;
     private Gson gson;
 
     //생성자
-    public NewBook_ListAdapter(Context context, ArrayList<Book> itemList, String pos) {
+    public MyBook_ListAdapter(Context context, ArrayList<MyBooks> itemList, String pos) {
         this.context = context;
         this.itemList = itemList;
-        this.pos = pos;
         gson = new Gson();
     }
 
@@ -46,20 +46,19 @@ public class NewBook_ListAdapter extends RecyclerView.Adapter<NewBook_ListAdapte
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
-        VolumeInfo volumeInfo = itemList.get(position).getVolumeInfo();
+        MyBooks volumeInfo = itemList.get(position);
 
-        holder.tvTitle.setText(volumeInfo.getTitle());
+        holder.tvTitle.setText(volumeInfo.getBookTitle());
 
 
         try {
-            holder.ivPublisher.setText(android.text.TextUtils.join(",", volumeInfo.getAuthors()));
+            holder.ivPublisher.setText(volumeInfo.getBookPublisher());
         } catch (Exception e) {
         }
 
-        holder.ivDescription.setText(volumeInfo.getDescription());
+        holder.ivDescription.setText(volumeInfo.getBookDesc());
         try {
-            Picasso.with(context).load(itemList.get(position).getVolumeInfo().getImageLinks().get("thumbnail")).into(holder.ivPhoto);
-            Log.d("img", itemList.get(position).getVolumeInfo().getImageLinks().get("thumbnail"));
+            Picasso.with(context).load(itemList.get(position).getBookImgUri()).into(holder.ivPhoto);
         } catch (Exception e) {
             holder.ivPhoto.setImageResource(R.mipmap.no_cover_thumb);
         }
@@ -96,7 +95,7 @@ public class NewBook_ListAdapter extends RecyclerView.Adapter<NewBook_ListAdapte
         @Override
         public void onClick(View view) {
             Toast.makeText(view.getContext(), "Clicked Card Position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
-            Intent moveIntent = new Intent(context, AddBookActivity.class);
+            Intent moveIntent = new Intent(context, DetailActivity.class);
             moveIntent.putExtra("book", itemList.get(getLayoutPosition()));
             context.startActivity(moveIntent);
         }
